@@ -51,6 +51,7 @@ export const BRAND_HOME: Record<string, string> = {
 export const CATALOG: CatalogItem[] = [
   {
     id: "c-tee-ivory",
+    image: teeIvory,
     name: "Boxy cotton tee",
     brand: "Zara",
     price: 1590,
@@ -62,6 +63,7 @@ export const CATALOG: CatalogItem[] = [
   },
   {
     id: "c-shirt-ink",
+    image: shirtInk,
     name: "Oversized poplin shirt",
     brand: "H&M",
     price: 1999,
@@ -73,6 +75,7 @@ export const CATALOG: CatalogItem[] = [
   },
   {
     id: "c-crop-clay",
+    image: cropClay,
     name: "Rib knit crop",
     brand: "Myntra",
     price: 899,
@@ -84,6 +87,7 @@ export const CATALOG: CatalogItem[] = [
   },
   {
     id: "c-kurta-sage",
+    image: kurtaSage,
     name: "Straight cotton kurta",
     brand: "Nykaa Fashion",
     price: 1499,
@@ -95,6 +99,7 @@ export const CATALOG: CatalogItem[] = [
   },
   {
     id: "c-jeans-indigo",
+    image: jeansIndigo,
     name: "Straight-leg denim",
     brand: "Zara",
     price: 3290,
@@ -106,6 +111,7 @@ export const CATALOG: CatalogItem[] = [
   },
   {
     id: "c-trouser-black",
+    image: trouserBlack,
     name: "Wide pleated trouser",
     brand: "H&M",
     price: 2499,
@@ -117,6 +123,7 @@ export const CATALOG: CatalogItem[] = [
   },
   {
     id: "c-skirt-cream",
+    image: skirtCream,
     name: "Bias midi skirt",
     brand: "Myntra",
     price: 1799,
@@ -128,6 +135,7 @@ export const CATALOG: CatalogItem[] = [
   },
   {
     id: "c-dress-rust",
+    image: dressRust,
     name: "Slip midi dress",
     brand: "Nykaa Fashion",
     price: 2650,
@@ -139,6 +147,7 @@ export const CATALOG: CatalogItem[] = [
   },
   {
     id: "c-dress-black",
+    image: dressBlack,
     name: "Column shift dress",
     brand: "Zara",
     price: 4290,
@@ -150,6 +159,7 @@ export const CATALOG: CatalogItem[] = [
   },
   {
     id: "c-coat-camel",
+    image: coatCamel,
     name: "Longline wool coat",
     brand: "H&M",
     price: 6999,
@@ -161,6 +171,7 @@ export const CATALOG: CatalogItem[] = [
   },
   {
     id: "c-blazer-grey",
+    image: blazerGrey,
     name: "Structured blazer",
     brand: "Myntra",
     price: 3899,
@@ -172,6 +183,7 @@ export const CATALOG: CatalogItem[] = [
   },
   {
     id: "c-boots-ink",
+    image: bootsInk,
     name: "Leather ankle boot",
     brand: "Zara",
     price: 5590,
