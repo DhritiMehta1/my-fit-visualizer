@@ -355,10 +355,19 @@ function Studio() {
                         on ? "border-foreground bg-secondary" : "border-border hover:border-foreground/40"
                       }`}
                     >
-                      <span
-                        className="h-8 w-8 shrink-0 rounded-full border border-border"
-                        style={{ backgroundColor: item.color }}
-                      />
+                      {item.image ? (
+                        <img
+                          src={item.image}
+                          alt={item.name}
+                          loading="lazy"
+                          className="h-14 w-11 shrink-0 border border-border object-cover"
+                        />
+                      ) : (
+                        <span
+                          className="h-8 w-8 shrink-0 rounded-full border border-border"
+                          style={{ backgroundColor: item.color }}
+                        />
+                      )}
                       <span className="min-w-0 flex-1">
                         <span className="block truncate text-sm">{item.name}</span>
                         <span className="eyebrow">{item.brand}</span>
