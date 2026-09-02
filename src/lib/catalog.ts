@@ -1,3 +1,16 @@
+import teeIvory from "@/assets/garments/tee-ivory.jpg";
+import shirtInk from "@/assets/garments/shirt-ink.jpg";
+import cropClay from "@/assets/garments/crop-clay.jpg";
+import kurtaSage from "@/assets/garments/kurta-sage.jpg";
+import jeansIndigo from "@/assets/garments/jeans-indigo.jpg";
+import trouserBlack from "@/assets/garments/trouser-black.jpg";
+import skirtCream from "@/assets/garments/skirt-cream.jpg";
+import dressRust from "@/assets/garments/dress-rust.jpg";
+import dressBlack from "@/assets/garments/dress-black.jpg";
+import coatCamel from "@/assets/garments/coat-camel.jpg";
+import blazerGrey from "@/assets/garments/blazer-grey.jpg";
+import bootsInk from "@/assets/garments/boots-ink.jpg";
+
 export type Slot = "top" | "bottom" | "dress" | "outer" | "shoes";
 
 export type GarmentSpec = {
