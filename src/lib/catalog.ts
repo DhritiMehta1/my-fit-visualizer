@@ -35,6 +35,7 @@ export type CatalogItem = {
   spec: GarmentSpec;
   url: string;
   source: "catalog" | "cart" | "closet";
+  image?: string;
 };
 
 export const BRANDS = ["Zara", "H&M", "Myntra", "Nykaa Fashion", "Closet"] as const;
