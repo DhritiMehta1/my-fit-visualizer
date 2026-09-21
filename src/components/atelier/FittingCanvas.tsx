@@ -26,10 +26,11 @@ export default function FittingCanvas(props: Props) {
       <color attach="background" args={["#ece7df"]} />
       <fog attach="fog" args={["#ece7df", 6, 16]} />
 
-      <hemisphereLight args={["#fdf7ec", "#b7ada0", 0.75]} />
+      <hemisphereLight args={["#fdf7ec", "#b7ada0", 0.62]} />
       <directionalLight
         position={[2.4, 4.2, 3]}
-        intensity={2.1}
+        intensity={1.55}
+        color="#fff2e6"
         castShadow
         shadow-mapSize-width={2048}
         shadow-mapSize-height={2048}
@@ -38,7 +39,7 @@ export default function FittingCanvas(props: Props) {
         shadow-camera-top={3}
         shadow-camera-bottom={-1}
       />
-      <directionalLight position={[-3, 2, -2]} intensity={0.55} color="#cbd6e2" />
+      <directionalLight position={[-3, 2, -2]} intensity={0.82} color="#cbd6e2" />
 
       <Environment>
         <Lightformer intensity={2} position={[0, 4, 2]} scale={[6, 6, 1]} />
