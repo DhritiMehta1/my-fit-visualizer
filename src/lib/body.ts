@@ -148,9 +148,11 @@ export function legKeys(rig: BodyRig, opts: { hem: number; offset?: number; tape
   const taper = opts.taper ?? 1;
   const { y, rHip } = rig;
   const base = [
-    { y: y.ankle, r: rHip * 0.3 },
+    { y: y.ankle, r: rHip * 0.27 },
+    { y: y.ankle + 0.035 * rig.H, r: rHip * 0.32 },
     { y: y.calf, r: rHip * 0.48 },
-    { y: y.knee, r: rHip * 0.4 },
+    { y: y.knee - 0.018 * rig.H, r: rHip * 0.38 },
+    { y: y.knee + 0.018 * rig.H, r: rHip * 0.4 },
     { y: y.thigh, r: rHip * 0.62 },
     { y: y.crotch + 0.01, r: rHip * 0.72 },
   ];
@@ -166,8 +168,9 @@ export function armKeys(rig: BodyRig, opts: { hem: number; offset?: number }) {
   const o = opts.offset ?? 0;
   const { y, rBust } = rig;
   const base = [
-    { y: y.waist - 0.02 * rig.H, r: rBust * 0.15 },
-    { y: y.waist + 0.06 * rig.H, r: rBust * 0.18 },
+    { y: y.waist - 0.02 * rig.H, r: rBust * 0.13 },
+    { y: y.waist + 0.035 * rig.H, r: rBust * 0.15 },
+    { y: y.waist + 0.09 * rig.H, r: rBust * 0.19 },
     { y: y.chest, r: rBust * 0.21 },
     { y: y.shoulder - 0.01, r: rBust * 0.26 },
     { y: y.shoulder + 0.02 * rig.H, r: rBust * 0.2 },
