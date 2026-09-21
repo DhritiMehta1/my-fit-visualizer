@@ -111,7 +111,7 @@ function Face({ rig, color }: { rig: ReturnType<typeof buildRig>; color: string 
   );
 }
 
-function Foot({ side, rig, shoe, skinTone }: { side: -1 | 1; rig: ReturnType<typeof buildRig>; shoe?: CatalogItem; skinTone: string }) {
+function Foot({ side, rig, shoe, skinTone }: { side: -1 | 1; rig: ReturnType<typeof buildRig>; shoe: CatalogItem | undefined; skinTone: string }) {
   const color = shoe?.color ?? skinTone;
   const thickness = shoe ? 0.02 : 0;
 
