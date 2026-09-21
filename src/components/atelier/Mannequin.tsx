@@ -87,14 +87,14 @@ function Face({ rig, color }: { rig: ReturnType<typeof buildRig>; color: string 
         <sphereGeometry args={[headRadius, 28, 18]} />
         <Skin color={color} />
       </mesh>
-      <mesh position={[0, headRadius * 0.02, headRadius * 0.88]} scale={[0.2, 0.3, 0.34]} castShadow>
+      <mesh position={[0, headRadius * 0.01, headRadius * 0.9]} scale={[0.14, 0.2, 0.24]} castShadow>
         <sphereGeometry args={[headRadius, 20, 14]} />
         <Skin color={color} />
       </mesh>
       {[-1, 1].map((side) => (
         <group key={`face-${side}`}>
-          <mesh position={[side * headRadius * 0.36, headRadius * 0.2, headRadius * 0.82]} scale={[1.4, 0.62, 0.34]}>
-            <sphereGeometry args={[headRadius * 0.09, 16, 10]} />
+          <mesh position={[side * headRadius * 0.3, headRadius * 0.19, headRadius * 0.84]} scale={[1.35, 0.56, 0.3]}>
+            <sphereGeometry args={[headRadius * 0.066, 16, 10]} />
             <meshStandardMaterial color={detailColor} roughness={0.8} />
           </mesh>
           <mesh position={[side * headRadius * 0.84, 0, 0]} scale={[0.34, 0.58, 0.2]} castShadow>
@@ -103,8 +103,8 @@ function Face({ rig, color }: { rig: ReturnType<typeof buildRig>; color: string 
           </mesh>
         </group>
       ))}
-      <mesh position={[0, -headRadius * 0.38, headRadius * 0.84]} scale={[1, 0.22, 0.18]}>
-        <sphereGeometry args={[headRadius * 0.3, 18, 10]} />
+      <mesh position={[0, -headRadius * 0.34, headRadius * 0.86]} scale={[1, 0.16, 0.14]}>
+        <sphereGeometry args={[headRadius * 0.22, 18, 10]} />
         <meshStandardMaterial color={detailColor} roughness={0.9} />
       </mesh>
     </group>
@@ -225,8 +225,8 @@ export function Mannequin({ measurements, skinTone, worn, spinning }: Props) {
           >
             <Skin color={skinTone} />
           </mesh>
-          <mesh position={[s * (rig.armOffset + rig.rBust * 0.1), rig.y.chest - 0.01 * rig.H, 0]} scale={[0.9, 1.12, 0.88]} castShadow>
-            <sphereGeometry args={[rig.rBust * 0.2, 22, 16]} />
+          <mesh position={[s * (rig.armOffset + rig.rBust * 0.06), rig.y.shoulder - 0.01 * rig.H, 0]} scale={[1.18, 1, 0.92]} castShadow>
+            <sphereGeometry args={[rig.rBust * 0.23, 22, 16]} />
             <Skin color={skinTone} />
           </mesh>
           <Hand side={s as -1 | 1} rig={rig} color={skinTone} />
