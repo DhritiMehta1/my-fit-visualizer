@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
 import { useAuth } from "@/hooks/useAuth";
+import { SiteLogo } from "@/components/atelier/SiteLogo";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
@@ -83,9 +84,7 @@ function AuthPage() {
     <main className="min-h-screen bg-background">
       <div className="mx-auto grid min-h-screen max-w-6xl grid-cols-1 md:grid-cols-2">
         <div className="hidden flex-col justify-between border-r border-border p-10 md:flex">
-          <Link to="/" className="font-display text-2xl">
-            Atelier
-          </Link>
+          <SiteLogo className="h-14" />
           <div className="max-w-sm">
             <p className="eyebrow">The fitting room</p>
             <h1 className="mt-3 text-4xl leading-tight">

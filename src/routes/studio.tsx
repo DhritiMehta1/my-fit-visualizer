@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import FittingCanvas from "@/components/atelier/FittingCanvas";
+import { SiteLogo } from "@/components/atelier/SiteLogo";
 import {
   BODY_SHAPES,
   DEFAULT_MEASUREMENTS,
@@ -209,10 +210,8 @@ function Studio() {
   return (
     <main className="min-h-screen bg-background">
       <header className="flex items-center justify-between border-b border-border px-5 py-4">
-        <Link to="/" className="font-display text-xl">
-          Atelier
-        </Link>
-        <nav className="flex items-center gap-6 text-xs uppercase tracking-[0.2em]">
+        <SiteLogo />
+        <nav className="flex items-center gap-3 text-xs uppercase tracking-[0.2em] sm:gap-6">
           <Link to="/closet" className="text-muted-foreground hover:text-foreground">
             Closet & carts
           </Link>

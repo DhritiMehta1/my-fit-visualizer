@@ -4,6 +4,7 @@ import { toast } from "sonner";
 
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { SiteLogo } from "@/components/atelier/SiteLogo";
 import { BRANDS, IMPORT_SHAPES, inr } from "@/lib/catalog";
 
 export const Route = createFileRoute("/closet")({
@@ -110,9 +111,7 @@ function ClosetPage() {
   return (
     <main className="min-h-screen bg-background">
       <header className="flex items-center justify-between border-b border-border px-5 py-4">
-        <Link to="/" className="font-display text-xl">
-          Atelier
-        </Link>
+        <SiteLogo />
         <Link to="/studio" className="text-xs uppercase tracking-[0.2em] text-muted-foreground hover:text-foreground">
           Fitting room
         </Link>
