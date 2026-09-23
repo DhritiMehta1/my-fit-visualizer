@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { SiteLogo } from "@/components/atelier/SiteLogo";
 import { CATALOG, BRAND_HOME } from "@/lib/catalog";
 
 export const Route = createFileRoute("/")({
@@ -42,8 +43,8 @@ function Index() {
   return (
     <main className="min-h-screen bg-background">
       <header className="flex items-center justify-between border-b border-border px-5 py-4">
-        <span className="font-display text-xl">Atelier</span>
-        <nav className="flex items-center gap-6 text-xs uppercase tracking-[0.2em]">
+        <SiteLogo />
+        <nav className="flex items-center gap-3 text-xs uppercase tracking-[0.2em] sm:gap-6">
           <Link to="/auth" className="text-muted-foreground hover:text-foreground">
             Sign in
           </Link>
