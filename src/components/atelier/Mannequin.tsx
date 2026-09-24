@@ -25,15 +25,15 @@ function Skin({ color }: { color: string }) {
   return (
     <meshPhysicalMaterial
       color={color}
-      roughness={0.56}
+      roughness={0.76}
       metalness={0}
-      clearcoat={0.08}
-      clearcoatRoughness={0.72}
-      sheen={0.18}
+      clearcoat={0.025}
+      clearcoatRoughness={0.88}
+      sheen={0.08}
       sheenColor={color}
       sheenRoughness={0.8}
       emissive={color}
-      emissiveIntensity={0.018}
+      emissiveIntensity={0.008}
     />
   );
 }
@@ -52,23 +52,23 @@ function Fabric({ color, thickness }: { color: string; thickness: number }) {
 function Hand({ side, rig, color }: { side: -1 | 1; rig: ReturnType<typeof buildRig>; color: string }) {
   const palmY = rig.y.waist - 0.055 * rig.H;
   const palmX = side * (rig.armOffset + rig.rBust * 0.1);
-  const palmWidth = rig.H * 0.046;
-  const palmLength = rig.H * 0.088;
-  const fingerLength = rig.H * 0.055;
-  const fingerRadius = rig.H * 0.0062;
-  const fingerOffsets = [-0.015, -0.005, 0.005, 0.015];
+  const palmWidth = rig.H * (rig.isMale ? 0.035 : 0.032);
+  const palmLength = rig.H * 0.057;
+  const fingerLength = rig.H * 0.038;
+  const fingerRadius = rig.H * 0.0047;
+  const fingerOffsets = [-0.012, -0.004, 0.004, 0.012].map((value) => value * (rig.H / 1.65));
 
   return (
-    <group position={[palmX, palmY, rig.H * 0.006]} rotation={[0.08, 0, -side * 0.045]}>
-      <mesh scale={[0.78, 1, 0.42]} castShadow>
+    <group position={[palmX, palmY, rig.H * 0.01]} rotation={[0.1, 0, -side * 0.055]}>
+      <mesh scale={[0.72, 1, 0.3]} castShadow>
         <capsuleGeometry args={[palmWidth, palmLength - palmWidth * 2, 6, 12]} />
         <Skin color={color} />
       </mesh>
       {fingerOffsets.map((offset, index) => (
         <mesh
           key={offset}
-          position={[offset, -palmLength * 0.68 - fingerLength * 0.42 + Math.abs(index - 1.5) * 0.003, 0]}
-          scale={[1, index === 0 || index === 3 ? 0.88 : 1, 0.86]}
+          position={[offset, -palmLength * 0.63 - fingerLength * 0.38 + Math.abs(index - 1.5) * 0.002, 0]}
+          scale={[1, index === 0 || index === 3 ? 0.86 : 1, 0.72]}
           castShadow
         >
           <capsuleGeometry args={[fingerRadius, fingerLength, 4, 8]} />
@@ -76,7 +76,7 @@ function Hand({ side, rig, color }: { side: -1 | 1; rig: ReturnType<typeof build
         </mesh>
       ))}
       <mesh
-        position={[-side * palmWidth * 0.58, -palmLength * 0.05, rig.H * 0.006]}
+        position={[-side * palmWidth * 0.52, -palmLength * 0.04, rig.H * 0.004]}
         rotation-z={side * 0.72}
         castShadow
       >
@@ -89,7 +89,7 @@ function Hand({ side, rig, color }: { side: -1 | 1; rig: ReturnType<typeof build
 
 function Face({ rig, color }: { rig: ReturnType<typeof buildRig>; color: string }) {
   const headY = rig.y.chin + 0.07 * rig.H;
-  const headRadius = rig.H * 0.068;
+  const headRadius = rig.H * 0.064;
   const skin = new THREE.Color(color);
   const browColor = skin.clone().multiplyScalar(0.31).getStyle();
   const lipColor = skin.clone().lerp(new THREE.Color("#8f4f52"), rig.isMale ? 0.16 : 0.3).getStyle();
@@ -285,7 +285,7 @@ export function Mannequin({ measurements, modelStyle, skinTone, worn, spinning }
             <Skin color={skinTone} />
           </mesh>
           <mesh
-            position={[s * (rig.armOffset + rig.rBust * 0.1), rig.y.waist + rig.H * 0.035, rig.H * 0.004]}
+            position={[s * (rig.armOffset + rig.rBust * 0.115), rig.y.waist + rig.H * 0.048, rig.H * 0.012]}
             rotation-z={-s * 0.018}
             scale={[rig.armBuild * 0.9, 1, rig.isMale ? 0.92 : 0.84]}
             castShadow
@@ -293,8 +293,8 @@ export function Mannequin({ measurements, modelStyle, skinTone, worn, spinning }
             <capsuleGeometry args={[rig.rBust * 0.145, rig.H * 0.145, 10, 24]} />
             <Skin color={skinTone} />
           </mesh>
-          <mesh position={[s * (rig.armOffset + rig.rBust * 0.065), rig.y.shoulder - 0.018 * rig.H, 0]} scale={[rig.isMale ? 1.22 : 1.08, 1.18, rig.isMale ? 1.03 : 0.94]} castShadow>
-            <sphereGeometry args={[rig.rBust * 0.22, 28, 20]} />
+          <mesh position={[s * (rig.armOffset + rig.rBust * 0.065), rig.y.shoulder - 0.018 * rig.H, 0]} scale={[rig.isMale ? 1.16 : 1.04, 1.08, rig.isMale ? 1 : 0.92]} castShadow>
+            <sphereGeometry args={[rig.rBust * 0.19, 28, 20]} />
             <Skin color={skinTone} />
           </mesh>
           <Hand side={s as -1 | 1} rig={rig} color={skinTone} />
@@ -307,7 +307,7 @@ export function Mannequin({ measurements, modelStyle, skinTone, worn, spinning }
           key={`clavicle-${side}`}
           position={[side * rig.H * 0.043, rig.y.neck - 0.022 * rig.H, rig.H * 0.004]}
           rotation-z={-side * 0.13}
-          scale={[rig.isMale ? 2.05 : 1.75, 0.34, rig.isMale ? 0.84 : 0.75]}
+          scale={[rig.isMale ? 1.86 : 1.62, 0.27, rig.isMale ? 0.78 : 0.7]}
           castShadow
         >
           <sphereGeometry args={[rig.H * 0.037, 28, 18]} />
@@ -315,7 +315,7 @@ export function Mannequin({ measurements, modelStyle, skinTone, worn, spinning }
         </mesh>
       ))}
       <mesh position={[0, (rig.y.neck + rig.y.chin) / 2, 0]} castShadow>
-        <capsuleGeometry args={[rig.H * 0.037 * rig.neckBuild, Math.max(rig.y.chin - rig.y.neck - rig.H * 0.045, 0.008), 10, 28]} />
+        <capsuleGeometry args={[rig.H * 0.031 * rig.neckBuild, Math.max(rig.y.chin - rig.y.neck - rig.H * 0.05, 0.006), 10, 28]} />
         <Skin color={skinTone} />
       </mesh>
       <Face rig={rig} color={skinTone} />
@@ -328,7 +328,7 @@ export function Mannequin({ measurements, modelStyle, skinTone, worn, spinning }
             scale={[0.9, 1.08, 0.42]}
             castShadow
           >
-            <sphereGeometry args={[rig.rHip * 0.23, 24, 16]} />
+            <sphereGeometry args={[rig.rHip * 0.14, 24, 16]} />
             <Skin color={skinTone} />
           </mesh>
         </group>

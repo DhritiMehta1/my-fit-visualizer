@@ -115,14 +115,14 @@ export function torsoKeys(rig: BodyRig, opts: { from: number; to: number; offset
   const { y, rHip, rWaist, rBust, shoulderHalf } = rig;
 
   const all = [
-    { y: y.crotch - 0.02 * rig.H, r: rHip * 0.98 },
-    { y: y.hip, r: rHip },
-    { y: y.waist, r: rWaist },
-    { y: y.underBust, r: rBust * 0.94 },
-    { y: y.bust, r: rBust },
-    { y: y.chest, r: rBust * 0.9 },
-    { y: y.shoulder, r: shoulderHalf * 0.82 },
-    { y: y.shoulder + 0.012 * rig.H, r: shoulderHalf * 0.5 },
+    { y: y.crotch - 0.02 * rig.H, r: rHip * (rig.isMale ? 0.86 : 0.98) },
+    { y: y.hip, r: rHip * (rig.isMale ? 0.9 : 1) },
+    { y: y.waist, r: rWaist * (rig.isMale ? 0.96 : 1) },
+    { y: y.underBust, r: rBust * (rig.isMale ? 0.9 : 0.94) },
+    { y: y.bust, r: rBust * (rig.isMale ? 0.94 : 1) },
+    { y: y.chest, r: rBust * (rig.isMale ? 0.98 : 0.9) },
+    { y: y.shoulder, r: shoulderHalf * (rig.isMale ? 0.9 : 0.82) },
+    { y: y.shoulder + 0.012 * rig.H, r: shoulderHalf * (rig.isMale ? 0.56 : 0.5) },
   ];
 
   const from = opts.from;
