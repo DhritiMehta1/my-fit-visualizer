@@ -12,6 +12,7 @@ import {
   SHAPE_PRESETS,
   type BodyShapeId,
   type Measurements,
+  type ModelStyle,
 } from "@/lib/body";
 import {
   CATALOG,
@@ -89,6 +90,7 @@ function Studio() {
 
   const [m, setM] = useState<Measurements>(DEFAULT_MEASUREMENTS);
   const [shape, setShape] = useState<BodyShapeId>("hourglass");
+  const [modelStyle, setModelStyle] = useState<ModelStyle>("female");
   const [skinTone, setSkinTone] = useState("#c99770");
   const [photo, setPhoto] = useState<string | null>(null);
   const [spinning, setSpinning] = useState(true);
@@ -116,6 +118,7 @@ function Studio() {
           inseam_cm: Number(data.inseam_cm),
         });
         setShape((data.body_shape as BodyShapeId) ?? "hourglass");
+        setModelStyle(data.gender_presentation === "male" ? "male" : "female");
         setSkinTone(data.skin_tone ?? "#c99770");
       }
       const { data: items } = await supabase
@@ -176,6 +179,7 @@ function Studio() {
         id: user.id,
         ...m,
         body_shape: shape,
+        gender_presentation: modelStyle,
         skin_tone: skinTone,
         updated_at: new Date().toISOString(),
       },
@@ -246,6 +250,27 @@ function Studio() {
 
           {tab === "body" ? (
             <div className="space-y-8 p-6">
+              <section>
+                <p className="eyebrow">Model</p>
+                <div className="mt-3 grid grid-cols-2 border border-border p-1" role="group" aria-label="Choose model">
+                  {(["female", "male"] as const).map((option) => (
+                    <button
+                      key={option}
+                      type="button"
+                      aria-pressed={modelStyle === option}
+                      onClick={() => setModelStyle(option)}
+                      className={`px-4 py-3 text-xs uppercase tracking-[0.18em] transition-colors ${
+                        modelStyle === option
+                          ? "bg-primary text-primary-foreground"
+                          : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+                      }`}
+                    >
+                      {option}
+                    </button>
+                  ))}
+                </div>
+              </section>
+
               <section>
                 <p className="eyebrow">Body type</p>
                 <div className="mt-3 space-y-2">
@@ -388,13 +413,21 @@ function Studio() {
 
         {/* -------- stage -------- */}
         <section className="relative order-1 h-[62vh] lg:order-2 lg:h-[calc(100vh-57px)]">
-          <FittingCanvas measurements={m} skinTone={skinTone} worn={wornList} spinning={spinning} />
+          <FittingCanvas
+            measurements={m}
+            modelStyle={modelStyle}
+            skinTone={skinTone}
+            worn={wornList}
+            spinning={spinning}
+          />
 
           <div className="pointer-events-none absolute inset-x-0 top-0 flex items-start justify-between p-5">
             <div>
               <p className="eyebrow">Live fit</p>
               <h1 className="font-display text-2xl">
-                {wornList.length ? `${wornList.length} pieces on you` : "Your model"}
+                {wornList.length
+                  ? `${wornList.length} pieces on you`
+                  : `Your ${modelStyle} model`}
               </h1>
             </div>
             <button

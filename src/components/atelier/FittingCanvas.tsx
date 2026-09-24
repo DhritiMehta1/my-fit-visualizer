@@ -3,7 +3,7 @@ import { Canvas } from "@react-three/fiber";
 import { ContactShadows, Environment, Lightformer, OrbitControls } from "@react-three/drei";
 
 import { Mannequin } from "./Mannequin";
-import type { Measurements } from "@/lib/body";
+import type { Measurements, ModelStyle } from "@/lib/body";
 import type { CatalogItem } from "@/lib/catalog";
 
 type Props = {
@@ -11,6 +11,7 @@ type Props = {
   skinTone: string;
   worn: CatalogItem[];
   spinning: boolean;
+  modelStyle: ModelStyle;
 };
 
 export default function FittingCanvas(props: Props) {

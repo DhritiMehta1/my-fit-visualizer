@@ -10,6 +10,8 @@ export type Measurements = {
   inseam_cm: number;
 };
 
+export type ModelStyle = "female" | "male";
+
 export const BODY_SHAPES = [
   { id: "hourglass", label: "Hourglass", note: "Bust and hips balanced, defined waist" },
   { id: "pear", label: "Pear", note: "Hips wider than shoulders" },
@@ -43,9 +45,10 @@ const rad = (cm: number) => cm / 100 / (2 * Math.PI);
 
 export type BodyRig = ReturnType<typeof buildRig>;
 
-export function buildRig(m: Measurements) {
+export function buildRig(m: Measurements, modelStyle: ModelStyle = "female") {
   const H = m.height_cm / 100;
   const softness = THREE.MathUtils.clamp((m.weight_kg - 45) / 60, 0.05, 1);
+  const isMale = modelStyle === "male";
 
   const y = {
     floor: 0,
@@ -78,10 +81,16 @@ export function buildRig(m: Measurements) {
     rBust,
     shoulderHalf,
     softness,
+    modelStyle,
+    isMale,
     /** torso is elliptical: deeper across, shallower front-to-back */
-    torsoScale: [1.14, 1, 0.8] as [number, number, number],
-    legOffset: rHip * 0.44,
-    armOffset: shoulderHalf * 0.94,
+    torsoScale: (isMale ? [1.1, 1, 0.88] : [1.14, 1, 0.8]) as [number, number, number],
+    headScale: (isMale ? [0.91, 1.05, 0.92] : [0.86, 1.07, 0.9]) as [number, number, number],
+    legOffset: rHip * (isMale ? 0.4 : 0.44),
+    armOffset: shoulderHalf * (isMale ? 1.01 : 0.94),
+    armBuild: isMale ? 1.12 : 0.96,
+    legBuild: isMale ? 1.06 : 0.98,
+    neckBuild: isMale ? 1.16 : 0.94,
   };
 }
 
@@ -120,7 +129,8 @@ export function torsoKeys(rig: BodyRig, opts: { from: number; to: number; offset
   const to = opts.to;
   const inRange = all.filter((k) => k.y > from && k.y < to);
   const rAt = (yy: number) => {
-    let prev = all[0]!;
+    let prev = all[0];
+    if (!prev) return 0.004;
     for (const k of all) {
       if (k.y >= yy) {
         const t = (yy - prev.y) / Math.max(k.y - prev.y, 1e-5);
@@ -148,13 +158,13 @@ export function legKeys(rig: BodyRig, opts: { hem: number; offset?: number; tape
   const taper = opts.taper ?? 1;
   const { y, rHip } = rig;
   const base = [
-    { y: y.ankle, r: rHip * 0.27 },
-    { y: y.ankle + 0.035 * rig.H, r: rHip * 0.32 },
-    { y: y.calf, r: rHip * 0.48 },
-    { y: y.knee - 0.018 * rig.H, r: rHip * 0.38 },
-    { y: y.knee + 0.018 * rig.H, r: rHip * 0.4 },
-    { y: y.thigh, r: rHip * 0.62 },
-    { y: y.crotch + 0.01, r: rHip * 0.72 },
+    { y: y.ankle, r: rHip * 0.27 * rig.legBuild },
+    { y: y.ankle + 0.035 * rig.H, r: rHip * 0.32 * rig.legBuild },
+    { y: y.calf, r: rHip * 0.48 * rig.legBuild },
+    { y: y.knee - 0.018 * rig.H, r: rHip * 0.38 * rig.legBuild },
+    { y: y.knee + 0.018 * rig.H, r: rHip * 0.4 * rig.legBuild },
+    { y: y.thigh, r: rHip * 0.62 * rig.legBuild },
+    { y: y.crotch + 0.01, r: rHip * 0.72 * rig.legBuild },
   ];
   return base
     .filter((k) => k.y >= opts.hem - 1e-6)
@@ -168,12 +178,12 @@ export function armKeys(rig: BodyRig, opts: { hem: number; offset?: number }) {
   const o = opts.offset ?? 0;
   const { y, rBust } = rig;
   const base = [
-    { y: y.waist - 0.02 * rig.H, r: rBust * 0.13 },
-    { y: y.waist + 0.035 * rig.H, r: rBust * 0.15 },
-    { y: y.waist + 0.09 * rig.H, r: rBust * 0.19 },
-    { y: y.chest, r: rBust * 0.21 },
-    { y: y.shoulder - 0.01, r: rBust * 0.26 },
-    { y: y.shoulder + 0.02 * rig.H, r: rBust * 0.2 },
+    { y: y.waist - 0.02 * rig.H, r: rBust * 0.13 * rig.armBuild },
+    { y: y.waist + 0.035 * rig.H, r: rBust * 0.15 * rig.armBuild },
+    { y: y.waist + 0.09 * rig.H, r: rBust * 0.19 * rig.armBuild },
+    { y: y.chest, r: rBust * 0.21 * rig.armBuild },
+    { y: y.shoulder - 0.01, r: rBust * 0.26 * rig.armBuild },
+    { y: y.shoulder + 0.02 * rig.H, r: rBust * 0.2 * rig.armBuild },
   ];
   return base
     .filter((k) => k.y >= opts.hem - 1e-6)

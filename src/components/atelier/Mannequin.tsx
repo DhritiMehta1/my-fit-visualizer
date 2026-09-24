@@ -9,6 +9,7 @@ import {
   legKeys,
   torsoKeys,
   type Measurements,
+  type ModelStyle,
 } from "@/lib/body";
 import type { CatalogItem } from "@/lib/catalog";
 
@@ -17,6 +18,7 @@ type Props = {
   skinTone: string;
   worn: CatalogItem[];
   spinning: boolean;
+  modelStyle: ModelStyle;
 };
 
 function Skin({ color }: { color: string }) {
@@ -90,75 +92,77 @@ function Face({ rig, color }: { rig: ReturnType<typeof buildRig>; color: string 
   const headRadius = rig.H * 0.068;
   const skin = new THREE.Color(color);
   const browColor = skin.clone().multiplyScalar(0.31).getStyle();
-  const lipColor = skin.clone().lerp(new THREE.Color("#8f4f52"), 0.46).getStyle();
-  const blushColor = skin.clone().lerp(new THREE.Color("#b86665"), 0.24).getStyle();
+  const lipColor = skin.clone().lerp(new THREE.Color("#8f4f52"), rig.isMale ? 0.16 : 0.3).getStyle();
   const irisColor = "#4b372c";
 
   return (
     <group position={[0, headY, 0]}>
-      <mesh scale={[0.84, 1.08, 0.9]} castShadow>
+      <mesh scale={rig.headScale} castShadow>
         <sphereGeometry args={[headRadius, 56, 42]} />
         <Skin color={color} />
       </mesh>
       {/* Lower face softens the jaw rather than leaving a spherical doll head. */}
-      <mesh position={[0, -headRadius * 0.61, headRadius * 0.035]} scale={[0.62, 0.4, 0.66]} castShadow>
+      <mesh
+        position={[0, -headRadius * 0.61, headRadius * 0.035]}
+        scale={rig.isMale ? [0.76, 0.42, 0.68] : [0.64, 0.39, 0.66]}
+        castShadow
+      >
         <sphereGeometry args={[headRadius, 40, 28]} />
         <Skin color={color} />
       </mesh>
       {/* Short neutral hair adds a natural silhouette without hiding the face. */}
-      <mesh position={[0, headRadius * 0.42, -headRadius * 0.05]} scale={[0.865, 0.73, 0.92]} castShadow>
+      <mesh
+        position={[0, headRadius * (rig.isMale ? 0.48 : 0.42), -headRadius * 0.06]}
+        scale={rig.isMale ? [0.94, 0.62, 0.96] : [0.88, 0.72, 0.93]}
+        castShadow
+      >
         <sphereGeometry args={[headRadius, 48, 32, 0, Math.PI * 2, 0, Math.PI * 0.61]} />
         <meshStandardMaterial color={browColor} roughness={0.9} />
       </mesh>
       {/* Nose bridge and tip. */}
-      <mesh position={[0, -headRadius * 0.01, headRadius * 0.82]} scale={[0.12, 0.27, 0.2]} castShadow>
+      <mesh position={[0, -headRadius * 0.015, headRadius * 0.84]} scale={[0.1, 0.25, 0.16]} castShadow>
         <sphereGeometry args={[headRadius, 28, 20]} />
         <Skin color={color} />
       </mesh>
-      <mesh position={[0, -headRadius * 0.14, headRadius * 0.96]} scale={[0.23, 0.13, 0.17]} castShadow>
+      <mesh position={[0, -headRadius * 0.15, headRadius * 0.95]} scale={[0.19, 0.1, 0.14]} castShadow>
         <sphereGeometry args={[headRadius, 24, 16]} />
         <Skin color={color} />
       </mesh>
       {[-1, 1].map((side) => (
         <group key={`face-${side}`}>
-          <group position={[side * headRadius * 0.3, headRadius * 0.18, headRadius * 0.79]}>
-            <mesh scale={[1.55, 0.72, 0.34]}>
-              <sphereGeometry args={[headRadius * 0.1, 24, 16]} />
+          <group position={[side * headRadius * 0.29, headRadius * 0.18, headRadius * 0.82]}>
+            <mesh scale={[1.32, 0.56, 0.25]}>
+              <sphereGeometry args={[headRadius * 0.078, 24, 16]} />
               <meshPhysicalMaterial color="#f5eee8" roughness={0.3} clearcoat={0.22} />
             </mesh>
-            <mesh position={[-side * headRadius * 0.008, 0, headRadius * 0.03]}>
-              <sphereGeometry args={[headRadius * 0.047, 20, 16]} />
+            <mesh position={[-side * headRadius * 0.006, 0, headRadius * 0.022]}>
+              <sphereGeometry args={[headRadius * 0.034, 20, 16]} />
               <meshPhysicalMaterial color={irisColor} roughness={0.35} clearcoat={0.35} />
             </mesh>
-            <mesh position={[-side * headRadius * 0.008, 0, headRadius * 0.071]}>
-              <sphereGeometry args={[headRadius * 0.021, 16, 12]} />
+            <mesh position={[-side * headRadius * 0.006, 0, headRadius * 0.05]}>
+              <sphereGeometry args={[headRadius * 0.014, 16, 12]} />
               <meshStandardMaterial color="#17120f" roughness={0.3} />
-            </mesh>
-            <mesh position={[-side * headRadius * 0.017, headRadius * 0.018, headRadius * 0.088]}>
-              <sphereGeometry args={[headRadius * 0.008, 12, 8]} />
-              <meshBasicMaterial color="#ffffff" />
             </mesh>
           </group>
           <mesh
-            position={[side * headRadius * 0.3, headRadius * 0.34, headRadius * 0.79]}
+            position={[side * headRadius * 0.3, headRadius * 0.32, headRadius * 0.8]}
             rotation-z={-side * 0.08}
-            scale={[1.5, 0.22, 0.24]}
+            scale={[1.42, 0.18, 0.2]}
           >
             <sphereGeometry args={[headRadius * 0.08, 20, 10]} />
             <meshStandardMaterial color={browColor} roughness={0.95} />
           </mesh>
-          <mesh position={[side * headRadius * 0.84, 0, 0]} scale={[0.34, 0.58, 0.2]} castShadow>
+          <mesh position={[side * headRadius * 0.88, 0, 0]} scale={[0.29, 0.53, 0.18]} castShadow>
             <sphereGeometry args={[headRadius * 0.44, 18, 12]} />
             <Skin color={color} />
           </mesh>
-          <mesh position={[side * headRadius * 0.43, -headRadius * 0.13, headRadius * 0.73]} scale={[1.3, 0.7, 0.22]}>
-            <sphereGeometry args={[headRadius * 0.12, 16, 10]} />
-            <meshStandardMaterial color={blushColor} transparent opacity={0.16} roughness={1} />
-          </mesh>
         </group>
       ))}
-      <mesh position={[0, -headRadius * 0.39, headRadius * 0.82]} scale={[1, 0.19, 0.12]}>
-        <sphereGeometry args={[headRadius * 0.23, 28, 14]} />
+      <mesh
+        position={[0, -headRadius * 0.4, headRadius * 0.83]}
+        scale={[1, rig.isMale ? 0.1 : 0.14, 0.09]}
+      >
+        <sphereGeometry args={[headRadius * (rig.isMale ? 0.18 : 0.2), 28, 14]} />
         <meshPhysicalMaterial color={lipColor} roughness={0.56} clearcoat={0.08} />
       </mesh>
     </group>
@@ -183,9 +187,9 @@ function Foot({ side, rig, shoe, skinTone }: { side: -1 | 1; rig: ReturnType<typ
   );
 }
 
-export function Mannequin({ measurements, skinTone, worn, spinning }: Props) {
+export function Mannequin({ measurements, modelStyle, skinTone, worn, spinning }: Props) {
   const group = useRef<THREE.Group>(null);
-  const rig = useMemo(() => buildRig(measurements), [measurements]);
+  const rig = useMemo(() => buildRig(measurements, modelStyle), [measurements, modelStyle]);
 
   useFrame((_, delta) => {
     if (!group.current) return;
@@ -274,7 +278,7 @@ export function Mannequin({ measurements, skinTone, worn, spinning }: Props) {
           <mesh
             position={[s * (rig.armOffset + rig.rBust * 0.07), (rig.y.shoulder + rig.y.chest) / 2 - rig.H * 0.04, 0]}
             rotation-z={-s * 0.045}
-            scale={[0.95, 1, 0.9]}
+            scale={[rig.armBuild, 1, rig.isMale ? 0.98 : 0.9]}
             castShadow
           >
             <capsuleGeometry args={[rig.rBust * 0.2, rig.H * 0.16, 10, 24]} />
@@ -283,13 +287,13 @@ export function Mannequin({ measurements, skinTone, worn, spinning }: Props) {
           <mesh
             position={[s * (rig.armOffset + rig.rBust * 0.1), rig.y.waist + rig.H * 0.035, rig.H * 0.004]}
             rotation-z={-s * 0.018}
-            scale={[0.88, 1, 0.84]}
+            scale={[rig.armBuild * 0.9, 1, rig.isMale ? 0.92 : 0.84]}
             castShadow
           >
             <capsuleGeometry args={[rig.rBust * 0.145, rig.H * 0.145, 10, 24]} />
             <Skin color={skinTone} />
           </mesh>
-          <mesh position={[s * (rig.armOffset + rig.rBust * 0.065), rig.y.shoulder - 0.018 * rig.H, 0]} scale={[1.08, 1.18, 0.94]} castShadow>
+          <mesh position={[s * (rig.armOffset + rig.rBust * 0.065), rig.y.shoulder - 0.018 * rig.H, 0]} scale={[rig.isMale ? 1.22 : 1.08, 1.18, rig.isMale ? 1.03 : 0.94]} castShadow>
             <sphereGeometry args={[rig.rBust * 0.22, 28, 20]} />
             <Skin color={skinTone} />
           </mesh>
@@ -303,7 +307,7 @@ export function Mannequin({ measurements, skinTone, worn, spinning }: Props) {
           key={`clavicle-${side}`}
           position={[side * rig.H * 0.043, rig.y.neck - 0.022 * rig.H, rig.H * 0.004]}
           rotation-z={-side * 0.13}
-          scale={[1.75, 0.34, 0.75]}
+          scale={[rig.isMale ? 2.05 : 1.75, 0.34, rig.isMale ? 0.84 : 0.75]}
           castShadow
         >
           <sphereGeometry args={[rig.H * 0.037, 28, 18]} />
@@ -311,7 +315,7 @@ export function Mannequin({ measurements, skinTone, worn, spinning }: Props) {
         </mesh>
       ))}
       <mesh position={[0, (rig.y.neck + rig.y.chin) / 2, 0]} castShadow>
-        <capsuleGeometry args={[rig.H * 0.037, Math.max(rig.y.chin - rig.y.neck - rig.H * 0.045, 0.008), 10, 28]} />
+        <capsuleGeometry args={[rig.H * 0.037 * rig.neckBuild, Math.max(rig.y.chin - rig.y.neck - rig.H * 0.045, 0.008), 10, 28]} />
         <Skin color={skinTone} />
       </mesh>
       <Face rig={rig} color={skinTone} />
