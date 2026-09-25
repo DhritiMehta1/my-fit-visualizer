@@ -51,6 +51,7 @@ export function HumanBody({ rig, skinTone }: { rig: BodyRig; skinTone: string })
       const kind = mat.name === "pant" ? "pant" : mat.transparent ? "detail" : "skin";
       parts.push({ geometry, kind, source: mat });
     });
+    console.log("GLB box", JSON.stringify(box), parts.length);
     return { parts, box };
   }, [scene]);
 
