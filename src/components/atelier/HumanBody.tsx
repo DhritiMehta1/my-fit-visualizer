@@ -67,7 +67,7 @@ export function HumanBody({ rig, skinTone }: { rig: BodyRig; skinTone: string })
     let maxZ = 0;
     for (const p of baked.parts) {
       if (p.kind !== "skin" && p.kind !== "pant") continue;
-      const pos = p.geometry.attributes.position!;
+      const pos = p.geometry.attributes["position"]!;
       for (let i = 0; i < pos.count; i++) {
         const t = (pos.getY(i) - box.min.y) / h0;
         if (t < 0.5 || t > 0.56) continue;
@@ -84,7 +84,7 @@ export function HumanBody({ rig, skinTone }: { rig: BodyRig; skinTone: string })
 
     const out = baked.parts.map((p) => {
       const g = p.geometry.clone();
-      const pos = g.attributes.position!;
+      const pos = g.attributes["position"]!;
       for (let i = 0; i < pos.count; i++) {
         const y = pos.getY(i) - box.min.y;
         const t = y / h0;
