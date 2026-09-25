@@ -12,6 +12,7 @@ import {
   type ModelStyle,
 } from "@/lib/body";
 import type { CatalogItem } from "@/lib/catalog";
+import { HumanBody } from "./HumanBody";
 
 type Props = {
   measurements: Measurements;
@@ -49,126 +50,6 @@ function Fabric({ color, thickness }: { color: string; thickness: number }) {
   );
 }
 
-function Hand({ side, rig, color }: { side: -1 | 1; rig: ReturnType<typeof buildRig>; color: string }) {
-  const palmY = rig.y.waist - 0.055 * rig.H;
-  const palmX = side * (rig.armOffset + rig.rBust * 0.1);
-  const palmWidth = rig.H * (rig.isMale ? 0.035 : 0.032);
-  const palmLength = rig.H * 0.057;
-  const fingerLength = rig.H * 0.038;
-  const fingerRadius = rig.H * 0.0047;
-  const fingerOffsets = [-0.012, -0.004, 0.004, 0.012].map((value) => value * (rig.H / 1.65));
-
-  return (
-    <group position={[palmX, palmY, rig.H * 0.01]} rotation={[0.1, 0, -side * 0.055]}>
-      <mesh scale={[0.72, 1, 0.3]} castShadow>
-        <capsuleGeometry args={[palmWidth, palmLength - palmWidth * 2, 6, 12]} />
-        <Skin color={color} />
-      </mesh>
-      {fingerOffsets.map((offset, index) => (
-        <mesh
-          key={offset}
-          position={[offset, -palmLength * 0.63 - fingerLength * 0.38 + Math.abs(index - 1.5) * 0.002, 0]}
-          scale={[1, index === 0 || index === 3 ? 0.86 : 1, 0.72]}
-          castShadow
-        >
-          <capsuleGeometry args={[fingerRadius, fingerLength, 4, 8]} />
-          <Skin color={color} />
-        </mesh>
-      ))}
-      <mesh
-        position={[-side * palmWidth * 0.52, -palmLength * 0.04, rig.H * 0.004]}
-        rotation-z={side * 0.72}
-        castShadow
-      >
-        <capsuleGeometry args={[fingerRadius * 1.12, fingerLength * 0.7, 4, 8]} />
-        <Skin color={color} />
-      </mesh>
-    </group>
-  );
-}
-
-function Face({ rig, color }: { rig: ReturnType<typeof buildRig>; color: string }) {
-  const headY = rig.y.chin + 0.07 * rig.H;
-  const headRadius = rig.H * 0.064;
-  const skin = new THREE.Color(color);
-  const browColor = skin.clone().multiplyScalar(0.31).getStyle();
-  const lipColor = skin.clone().lerp(new THREE.Color("#8f4f52"), rig.isMale ? 0.16 : 0.3).getStyle();
-  const irisColor = "#4b372c";
-
-  return (
-    <group position={[0, headY, 0]}>
-      <mesh scale={rig.headScale} castShadow>
-        <sphereGeometry args={[headRadius, 56, 42]} />
-        <Skin color={color} />
-      </mesh>
-      {/* Lower face softens the jaw rather than leaving a spherical doll head. */}
-      <mesh
-        position={[0, -headRadius * 0.61, headRadius * 0.035]}
-        scale={rig.isMale ? [0.76, 0.42, 0.68] : [0.64, 0.39, 0.66]}
-        castShadow
-      >
-        <sphereGeometry args={[headRadius, 40, 28]} />
-        <Skin color={color} />
-      </mesh>
-      {/* Short neutral hair adds a natural silhouette without hiding the face. */}
-      <mesh
-        position={[0, headRadius * (rig.isMale ? 0.48 : 0.42), -headRadius * 0.06]}
-        scale={rig.isMale ? [0.94, 0.62, 0.96] : [0.88, 0.72, 0.93]}
-        castShadow
-      >
-        <sphereGeometry args={[headRadius, 48, 32, 0, Math.PI * 2, 0, Math.PI * 0.61]} />
-        <meshStandardMaterial color={browColor} roughness={0.9} />
-      </mesh>
-      {/* Nose bridge and tip. */}
-      <mesh position={[0, -headRadius * 0.015, headRadius * 0.84]} scale={[0.1, 0.25, 0.16]} castShadow>
-        <sphereGeometry args={[headRadius, 28, 20]} />
-        <Skin color={color} />
-      </mesh>
-      <mesh position={[0, -headRadius * 0.15, headRadius * 0.95]} scale={[0.19, 0.1, 0.14]} castShadow>
-        <sphereGeometry args={[headRadius, 24, 16]} />
-        <Skin color={color} />
-      </mesh>
-      {[-1, 1].map((side) => (
-        <group key={`face-${side}`}>
-          <group position={[side * headRadius * 0.29, headRadius * 0.18, headRadius * 0.82]}>
-            <mesh scale={[1.32, 0.56, 0.25]}>
-              <sphereGeometry args={[headRadius * 0.078, 24, 16]} />
-              <meshPhysicalMaterial color="#f5eee8" roughness={0.3} clearcoat={0.22} />
-            </mesh>
-            <mesh position={[-side * headRadius * 0.006, 0, headRadius * 0.022]}>
-              <sphereGeometry args={[headRadius * 0.034, 20, 16]} />
-              <meshPhysicalMaterial color={irisColor} roughness={0.35} clearcoat={0.35} />
-            </mesh>
-            <mesh position={[-side * headRadius * 0.006, 0, headRadius * 0.05]}>
-              <sphereGeometry args={[headRadius * 0.014, 16, 12]} />
-              <meshStandardMaterial color="#17120f" roughness={0.3} />
-            </mesh>
-          </group>
-          <mesh
-            position={[side * headRadius * 0.3, headRadius * 0.32, headRadius * 0.8]}
-            rotation-z={-side * 0.08}
-            scale={[1.42, 0.18, 0.2]}
-          >
-            <sphereGeometry args={[headRadius * 0.08, 20, 10]} />
-            <meshStandardMaterial color={browColor} roughness={0.95} />
-          </mesh>
-          <mesh position={[side * headRadius * 0.88, 0, 0]} scale={[0.29, 0.53, 0.18]} castShadow>
-            <sphereGeometry args={[headRadius * 0.44, 18, 12]} />
-            <Skin color={color} />
-          </mesh>
-        </group>
-      ))}
-      <mesh
-        position={[0, -headRadius * 0.4, headRadius * 0.83]}
-        scale={[1, rig.isMale ? 0.1 : 0.14, 0.09]}
-      >
-        <sphereGeometry args={[headRadius * (rig.isMale ? 0.18 : 0.2), 28, 14]} />
-        <meshPhysicalMaterial color={lipColor} roughness={0.56} clearcoat={0.08} />
-      </mesh>
-    </group>
-  );
-}
-
 function Foot({ side, rig, shoe, skinTone }: { side: -1 | 1; rig: ReturnType<typeof buildRig>; shoe: CatalogItem | undefined; skinTone: string }) {
   const color = shoe?.color ?? skinTone;
   const thickness = shoe ? 0.02 : 0;
@@ -196,13 +77,6 @@ export function Mannequin({ measurements, modelStyle, skinTone, worn, spinning }
     const dt = Math.min(delta, 0.05);
     if (spinning) group.current.rotation.y += dt * 0.5;
   });
-
-  const body = useMemo(() => {
-    const torso = lathe(torsoKeys(rig, { from: rig.y.crotch - 0.01, to: rig.y.shoulder + 0.014 * rig.H }));
-    const leg = lathe(legKeys(rig, { hem: rig.y.ankle }), 28);
-    const arm = lathe(armKeys(rig, { hem: rig.y.waist - 0.03 * rig.H }), 22);
-    return { torso, leg, arm };
-  }, [rig]);
 
   const dress = worn.find((i) => i.slot === "dress");
   const layers = useMemo(() => {
@@ -255,89 +129,15 @@ export function Mannequin({ measurements, modelStyle, skinTone, worn, spinning }
 
   return (
     <group ref={group} position={[0, 0, 0]}>
-      {/* ---- body ---- */}
-      <mesh geometry={body.torso} scale={rig.torsoScale} castShadow receiveShadow>
-        <Skin color={skinTone} />
-      </mesh>
+      {/* ---- body: human base mesh, scaled to the user's measurements ---- */}
+      <HumanBody rig={rig} skinTone={skinTone} />
 
-      {[-1, 1].map((s) => (
-        <mesh
-          key={`leg${s}`}
-          geometry={body.leg}
-          position={[s * rig.legOffset, 0, 0]}
-          scale={[1, 1, 0.94]}
-          castShadow
-          receiveShadow
-        >
-          <Skin color={skinTone} />
-        </mesh>
-      ))}
-
-      {[-1, 1].map((s) => (
-        <group key={`arm${s}`}>
-          <mesh
-            position={[s * (rig.armOffset + rig.rBust * 0.07), (rig.y.shoulder + rig.y.chest) / 2 - rig.H * 0.04, 0]}
-            rotation-z={-s * 0.045}
-            scale={[rig.armBuild, 1, rig.isMale ? 0.98 : 0.9]}
-            castShadow
-          >
-            <capsuleGeometry args={[rig.rBust * 0.2, rig.H * 0.16, 10, 24]} />
-            <Skin color={skinTone} />
-          </mesh>
-          <mesh
-            position={[s * (rig.armOffset + rig.rBust * 0.115), rig.y.waist + rig.H * 0.048, rig.H * 0.012]}
-            rotation-z={-s * 0.018}
-            scale={[rig.armBuild * 0.9, 1, rig.isMale ? 0.92 : 0.84]}
-            castShadow
-          >
-            <capsuleGeometry args={[rig.rBust * 0.145, rig.H * 0.145, 10, 24]} />
-            <Skin color={skinTone} />
-          </mesh>
-          <mesh position={[s * (rig.armOffset + rig.rBust * 0.065), rig.y.shoulder - 0.018 * rig.H, 0]} scale={[rig.isMale ? 1.16 : 1.04, 1.08, rig.isMale ? 1 : 0.92]} castShadow>
-            <sphereGeometry args={[rig.rBust * 0.19, 28, 20]} />
-            <Skin color={skinTone} />
-          </mesh>
-          <Hand side={s as -1 | 1} rig={rig} color={skinTone} />
-        </group>
-      ))}
-
-      {/* neck, shoulder transition + face */}
-      {([-1, 1] as const).map((side) => (
-        <mesh
-          key={`clavicle-${side}`}
-          position={[side * rig.H * 0.043, rig.y.neck - 0.022 * rig.H, rig.H * 0.004]}
-          rotation-z={-side * 0.13}
-          scale={[rig.isMale ? 1.86 : 1.62, 0.27, rig.isMale ? 0.78 : 0.7]}
-          castShadow
-        >
-          <sphereGeometry args={[rig.H * 0.037, 28, 18]} />
-          <Skin color={skinTone} />
-        </mesh>
-      ))}
-      <mesh position={[0, (rig.y.neck + rig.y.chin) / 2, 0]} castShadow>
-        <capsuleGeometry args={[rig.H * 0.031 * rig.neckBuild, Math.max(rig.y.chin - rig.y.neck - rig.H * 0.05, 0.006), 10, 28]} />
-        <Skin color={skinTone} />
-      </mesh>
-      <Face rig={rig} color={skinTone} />
-
-      {/* Soft joint landmarks remove the straight, carved-limb appearance. */}
-      {([-1, 1] as const).map((side) => (
-        <group key={`joint-details-${side}`}>
-          <mesh
-            position={[side * rig.legOffset, rig.y.knee + rig.H * 0.004, rig.rHip * 0.24]}
-            scale={[0.9, 1.08, 0.42]}
-            castShadow
-          >
-            <sphereGeometry args={[rig.rHip * 0.14, 24, 16]} />
-            <Skin color={skinTone} />
-          </mesh>
-        </group>
-      ))}
-
-      {/* feet */}
-      {([-1, 1] as const).map((side) => (
-        <Foot key={`foot${side}`} side={side} rig={rig} shoe={shoe} skinTone={skinTone} />
-      ))}
+      {/* shoes */}
+      {shoe
+        ? ([-1, 1] as const).map((side) => (
+            <Foot key={`foot${side}`} side={side} rig={rig} shoe={shoe} skinTone={skinTone} />
+          ))
+        : null}
 
       {/* ---- garments ---- */}
       {layers.map((layer) => {
