@@ -88,13 +88,28 @@ export function HumanBody({ rig, skinTone }: { rig: BodyRig; skinTone: string })
       for (let i = 0; i < pos.count; i++) {
         const y = pos.getY(i) - box.min.y;
         const t = y / h0;
-        let x = pos.getX(i) - cx;
-        let z = pos.getZ(i) - cz;
+        // Face the camera (+z) and relax the A-pose arms down toward the sides.
+        let x = -(pos.getX(i) - cx);
+        let z = -(pos.getZ(i) - cz);
+        let yy = y;
+        const ax = Math.abs(x);
+        const w = t > 0.55 ? THREE.MathUtils.smoothstep(ax, 0.1 * h0, 0.15 * h0) : 0;
+        if (w > 0) {
+          const px = 0.105 * h0;
+          const py = 0.8 * h0;
+          const a = -0.62 * w;
+          const dx = ax - px;
+          const dy = yy - py;
+          const nx = dx * Math.cos(a) - dy * Math.sin(a);
+          const ny = dx * Math.sin(a) + dy * Math.cos(a);
+          x = Math.sign(x) * (px + nx);
+          yy = py + ny;
+        }
         if (female) {
           x *= femaleWidth(t);
           z *= femaleDepth(t, x, z, h0);
         }
-        pos.setXYZ(i, x * s * kx, y * s, z * s * kz);
+        pos.setXYZ(i, x * s * kx, yy * s, z * s * kz);
       }
       g.computeVertexNormals();
       g.computeBoundingBox();
