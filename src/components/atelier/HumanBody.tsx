@@ -89,8 +89,8 @@ export function HumanBody({ rig, skinTone }: { rig: BodyRig; skinTone: string })
         const y = pos.getY(i) - box.min.y;
         const t = y / h0;
         // Face the camera (+z) and relax the A-pose arms down toward the sides.
-        let x = -(pos.getX(i) - cx);
-        let z = -(pos.getZ(i) - cz);
+        let x = pos.getX(i) - cx;
+        let z = pos.getZ(i) - cz;
         let yy = y;
         const ax = Math.abs(x);
         const w = t > 0.55 ? THREE.MathUtils.smoothstep(ax, 0.1 * h0, 0.15 * h0) : 0;
@@ -106,7 +106,10 @@ export function HumanBody({ rig, skinTone }: { rig: BodyRig; skinTone: string })
           yy = py + ny;
         }
         if (female) {
-          x *= femaleWidth(t);
+          // Reshape the torso core; arms move with the shoulders instead of being squashed.
+          const core = 1 - THREE.MathUtils.smoothstep(Math.abs(x), 0.09 * h0, 0.13 * h0);
+          const f = femaleWidth(t);
+          x = core * x * f + (1 - core) * (x + Math.sign(x) * 0.11 * h0 * (femaleWidth(0.81) - 1));
           z *= femaleDepth(t, x, z, h0);
         }
         pos.setXYZ(i, x * s * kx, yy * s, z * s * kz);
