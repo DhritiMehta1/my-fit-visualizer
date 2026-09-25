@@ -51,7 +51,6 @@ export function HumanBody({ rig, skinTone }: { rig: BodyRig; skinTone: string })
       const kind = mat.name === "pant" ? "pant" : mat.transparent ? "detail" : "skin";
       parts.push({ geometry, kind, source: mat });
     });
-    console.log("GLB box", JSON.stringify(box), parts.length);
     return { parts, box };
   }, [scene]);
 
@@ -98,6 +97,8 @@ export function HumanBody({ rig, skinTone }: { rig: BodyRig; skinTone: string })
         pos.setXYZ(i, x * s * kx, y * s, z * s * kz);
       }
       g.computeVertexNormals();
+      g.computeBoundingBox();
+      g.computeBoundingSphere();
       return { ...p, geometry: g };
     });
 
@@ -125,6 +126,7 @@ export function HumanBody({ rig, skinTone }: { rig: BodyRig; skinTone: string })
           material={p.kind === "skin" ? materials.skin : p.kind === "pant" ? materials.underwear : p.source}
           castShadow={p.kind !== "detail"}
           receiveShadow
+          frustumCulled={false}
         />
       ))}
     </group>
